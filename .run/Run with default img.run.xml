@@ -4,7 +4,7 @@
     <module name="BiometriaHuellaDactilar.main" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="es.unex.giiis.bss.jgarciapft.*" />
+        <option name="PATTERN" value="es.unex.giiis.bss.jgarciapft.transformations.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

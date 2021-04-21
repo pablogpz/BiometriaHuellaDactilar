@@ -1,15 +1,16 @@
 package es.unex.giiis.bss.jgarciapft.helpers;
 
-import es.unex.giiis.bss.jgarciapft.model.FingerprintImage;
+import es.unex.giiis.bss.jgarciapft.model.BaseImage;
 
 import java.awt.image.BufferedImage;
 
 public class GrayscaleToRGB {
 
-    public static BufferedImage grayscaleToRGB1GrayMode(FingerprintImage inputFingerprintImage) {
+    public static BufferedImage grayscaleToRGB1GrayMode(BaseImage inputFingerprintImage) {
 
         BufferedImage outputImage =
-                new BufferedImage(inputFingerprintImage.getWidth(), inputFingerprintImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                new BufferedImage(inputFingerprintImage.getWidth(),
+                        inputFingerprintImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
         for (int x = 0; x < inputFingerprintImage.getWidth(); x++) {
             for (int y = 0; y < inputFingerprintImage.getHeight(); y++) {

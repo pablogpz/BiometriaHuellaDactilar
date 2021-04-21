@@ -1,4 +1,6 @@
-package es.unex.giiis.bss.jgarciapft;
+package es.unex.giiis.bss.jgarciapft.helpers;
+
+import es.unex.giiis.bss.jgarciapft.Constants;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
