@@ -32,9 +32,20 @@ public class MemoizedProperty<T> {
             if (!(dependency instanceof Serializable))
                 throw new IllegalArgumentException(dependency + " isn't serializable");
 
-            if (dependency.getClass().isPrimitive() ||
-                    (dependency.getClass().isArray() && dependency.getClass().getComponentType().getComponentType().isPrimitive()))
-                throw new IllegalArgumentException(dependency + " can't of primitive type");
+            if (dependency.getClass().isPrimitive())
+                throw new IllegalArgumentException(dependency + " can't be of a primitive type");
+
+            if (dependency.getClass().isArray()) {
+                Object[] firstLevelArray = (Object[]) dependency;
+                if (!firstLevelArray[0].getClass().isArray()) {
+                    if (firstLevelArray.getClass().getComponentType().isPrimitive())
+                        throw new IllegalArgumentException("Dependency can't be an array of a primitive underlying type");
+                } else {
+                    if (firstLevelArray[0].getClass().getComponentType().isPrimitive()) {
+                        throw new IllegalArgumentException("Dependency can't be a matrix of a primitive underlying type");
+                    }
+                }
+            }
         }
 
         refreshDependenciesStore();
