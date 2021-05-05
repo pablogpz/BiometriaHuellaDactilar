@@ -1,15 +1,17 @@
 package es.unex.giiis.bss.jgarciapft.transformations;
 
-import es.unex.giiis.bss.jgarciapft.model.BaseImage;
 import es.unex.giiis.bss.jgarciapft.model.FingerprintImage;
 
 import java.awt.image.BufferedImage;
 
+import static es.unex.giiis.bss.jgarciapft.transformations.GrayscaleTransformation.DerivationMethod.MEAN_VALUE;
+import static es.unex.giiis.bss.jgarciapft.transformations.GrayscaleTransformation.DerivationMethod.WEIGHTED_MEAN;
+
 public class GrayscaleTransformation {
 
-    public static BaseImage toGrayscale(BufferedImage inputImage, int derivationMethod) {
+    public static FingerprintImage toGrayscale(BufferedImage inputImage, int derivationMethod) {
 
-        BaseImage outputFingerprintImage = new FingerprintImage(inputImage.getWidth(), inputImage.getHeight());
+        FingerprintImage outputFingerprintImage = new FingerprintImage(inputImage.getWidth(), inputImage.getHeight());
 
         for (int x = 0; x < inputImage.getWidth(); x++) {
             for (int y = 0; y < inputImage.getHeight(); y++) {
@@ -21,10 +23,10 @@ public class GrayscaleTransformation {
 
                 int grayLevel;
                 switch (derivationMethod) {
-                    case DerivationMethod.MEAN_VALUE:
+                    case MEAN_VALUE:
                         grayLevel = rgbToGray(r, g, b);
                         break;
-                    case DerivationMethod.WEIGHTED_MEAN:
+                    case WEIGHTED_MEAN:
                         grayLevel = rgbToGrayWeighted(r, g, b);
                         break;
                     default:

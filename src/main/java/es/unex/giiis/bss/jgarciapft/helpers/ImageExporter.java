@@ -9,10 +9,14 @@ import java.io.IOException;
 
 public class ImageExporter {
 
-    public static void exportImage(BufferedImage image) {
+    public static void exportImage(BufferedImage image, String path) {
+        exportImageWithExtension(image, path, Constants.DEFAULT_EXPORTED_IMG_EXTENSION);
+    }
+
+    public static void exportImageWithExtension(BufferedImage image, String path, String extension) {
         try {
-            File outputImageFile = new File(Constants.DEFAULT_EXPORTED_IMG_PATH);
-            ImageIO.write(image, Constants.DEFAULT_EXPORTED_IMG_EXTENSION, outputImageFile);
+            File outputImageFile = new File(path + "." + extension);
+            ImageIO.write(image, extension, outputImageFile);
         } catch (IOException e) {
             e.printStackTrace();
         }

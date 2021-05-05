@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  *
  * @param <T> Type of the memoized value
  */
-public class MemoizedProperty<T> {
+public class MemoizedValue<T> {
 
     private T memoValue;
     private final Supplier<T> updateCallback;
@@ -24,7 +24,7 @@ public class MemoizedProperty<T> {
 
     private Object[] dependenciesStore;
 
-    public MemoizedProperty(Supplier<T> updateCallback, Object[] dependencies) {
+    public MemoizedValue(Supplier<T> updateCallback, Object[] dependencies) {
         this.updateCallback = updateCallback;
         this.dependencies = dependencies;
 
@@ -51,7 +51,7 @@ public class MemoizedProperty<T> {
         refreshDependenciesStore();
     }
 
-    public MemoizedProperty(T initialValue, Supplier<T> updateCallback, Object[] dependencies) {
+    public MemoizedValue(T initialValue, Supplier<T> updateCallback, Object[] dependencies) {
         memoValue = initialValue;
         this.updateCallback = updateCallback;
         this.dependencies = dependencies;

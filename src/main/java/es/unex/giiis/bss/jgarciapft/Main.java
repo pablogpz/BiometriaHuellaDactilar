@@ -2,8 +2,9 @@ package es.unex.giiis.bss.jgarciapft;
 
 import es.unex.giiis.bss.jgarciapft.helpers.GrayscaleToRGB;
 import es.unex.giiis.bss.jgarciapft.helpers.ImageExporter;
-import es.unex.giiis.bss.jgarciapft.model.BaseImage;
 import es.unex.giiis.bss.jgarciapft.model.FingerprintImage;
+import es.unex.giiis.bss.jgarciapft.transformations.BinaryThreshold;
+import es.unex.giiis.bss.jgarciapft.transformations.Filter;
 import es.unex.giiis.bss.jgarciapft.transformations.GrayscaleTransformation;
 import es.unex.giiis.bss.jgarciapft.transformations.ImageEqualizer;
 
@@ -12,31 +13,46 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import static es.unex.giiis.bss.jgarciapft.helpers.GrayscaleToRGB.Variant;
 import static es.unex.giiis.bss.jgarciapft.transformations.GrayscaleTransformation.DerivationMethod;
 
 public class Main {
 
     public static void main(String[] args) {
+        String inputImageFile;
+
+        if (args.length == 0) inputImageFile = Constants.DEFAULT_IMG_NAME;
+        else inputImageFile = args[0];
+
         try {
             // Open input image
             BufferedImage inputImage = ImageIO.read(
-                    new File(Constants.DEFAULT_IMG_PATH + Constants.DEFAULT_IMG_NAME));
+                    new File(Constants.DEFAULT_IMG_PATH + inputImageFile));
 
             // Práctica 1. Transform input input to grayscale
-            BaseImage grayscaleImage =
+            FingerprintImage grayscaleImage =
                     GrayscaleTransformation.toGrayscale(inputImage, DerivationMethod.MEAN_VALUE);
+            ImageExporter.exportImage(
+                    GrayscaleToRGB.grayscaleToRGB1GrayMode(grayscaleImage, Variant.GRAYSCALE),
+                    "fingerprint-grayscale");
 
             // Práctica 2. Calculate the histogram and equalize the grayscale image
-            FingerprintImage eqdGrayscaleImage = ImageEqualizer.equalizeGrayscaleImage((FingerprintImage) grayscaleImage);
+            FingerprintImage eqdGrayscaleImage = ImageEqualizer.equalizeGrayscaleImage(grayscaleImage);
+            ImageExporter.exportImage(
+                    GrayscaleToRGB.grayscaleToRGB1GrayMode(eqdGrayscaleImage, Variant.GRAYSCALE),
+                    "fingerprint-equalized-grayscale");
 
-            // Show processed image statistics
-            System.out.printf("Processed image stats:\n\tMinimum gray value: %d\n\tMaximum gray value: %d\n\tMean gray value: %d\n",
-                    eqdGrayscaleImage.getMinGray(), eqdGrayscaleImage.getMaxGray(), eqdGrayscaleImage.getMeanGray());
+            // Práctica 3. Apply binary threshold and filter
+            FingerprintImage thresholdBinEqdImage = BinaryThreshold.binaryThreshold(eqdGrayscaleImage);
+            ImageExporter.exportImage(
+                    GrayscaleToRGB.grayscaleToRGB1GrayMode(thresholdBinEqdImage, Variant.BnW),
+                    "fingerprint-BW-threshold-equalized-grayscale");
+            FingerprintImage filteredThresholdBinEqdImage = Filter.filter(thresholdBinEqdImage);
 
             // Export processed image
-            BufferedImage rgbGrayscaleImage =
-                    GrayscaleToRGB.grayscaleToRGB1GrayMode(eqdGrayscaleImage);
-            ImageExporter.exportImage(rgbGrayscaleImage);
+            ImageExporter.exportImage(
+                    GrayscaleToRGB.grayscaleToRGB1GrayMode(filteredThresholdBinEqdImage, Variant.BnW),
+                    "fingerprint-BW-filtered-threshold-equalized-grayscale");
         } catch (IOException e) {
             e.printStackTrace();
         }

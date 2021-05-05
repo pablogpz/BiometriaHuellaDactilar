@@ -9,11 +9,11 @@ public class FingerprintImage implements BaseImage {
     private final int height;
     private final Character[][] pixels;
 
-    private final MemoizedProperty<int[]> histogramMemoized;
+    private final MemoizedValue<int[]> histogramMemoized;
 
-    private final MemoizedProperty<Integer> minGrayMemoized;
-    private final MemoizedProperty<Integer> maxGrayMemoized;
-    private final MemoizedProperty<Integer> meanGrayMemoized;
+    private final MemoizedValue<Integer> minGrayMemoized;
+    private final MemoizedValue<Integer> maxGrayMemoized;
+    private final MemoizedValue<Integer> meanGrayMemoized;
 
     public FingerprintImage(int width, int height) {
         this.width = width;
@@ -23,16 +23,16 @@ public class FingerprintImage implements BaseImage {
 
         Object[] memoDependencies = {pixels};
 
-        histogramMemoized = new MemoizedProperty<>(() -> HistogramCalculator.histogramFrom(this),
+        histogramMemoized = new MemoizedValue<>(() -> HistogramCalculator.histogramFrom(this),
                 memoDependencies);
 
-        minGrayMemoized = new MemoizedProperty<>(() -> ImageStatistics.calculateMinGray(this),
+        minGrayMemoized = new MemoizedValue<>(() -> ImageStatistics.calculateMinGray(this),
                 memoDependencies);
 
-        maxGrayMemoized = new MemoizedProperty<>(() -> ImageStatistics.calculateMaxGray(this),
+        maxGrayMemoized = new MemoizedValue<>(() -> ImageStatistics.calculateMaxGray(this),
                 memoDependencies);
 
-        meanGrayMemoized = new MemoizedProperty<>(() -> ImageStatistics.calculateMeanGray(this),
+        meanGrayMemoized = new MemoizedValue<>(() -> ImageStatistics.calculateMeanGray(this),
                 memoDependencies);
     }
 
@@ -51,6 +51,18 @@ public class FingerprintImage implements BaseImage {
         else
             throw new IndexOutOfBoundsException(
                     String.format("XY coordinates (%d-%d) out of the pixels matrix", x, y));
+    }
+
+    public void fillMarginsWith(char filler) {
+        for (int x = 0; x < getWidth(); x++) {
+            setPixel(x, 0, filler);
+            setPixel(x, getHeight() - 1, filler);
+        }
+
+        for (int y = 1; y < getHeight() - 1; y++) {
+            setPixel(0, y, filler);
+            setPixel(getWidth() - 1, y, filler);
+        }
     }
 
     private boolean validateXYCoord(int x, int y) {

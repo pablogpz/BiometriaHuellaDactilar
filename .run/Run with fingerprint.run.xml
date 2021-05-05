@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run with aerial" type="Application" factoryName="Application">
+  <configuration default="false" name="Run with fingerprint" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="es.unex.giiis.bss.jgarciapft.Main" />
     <module name="BiometriaHuellaDactilar.main" />
-    <option name="PROGRAM_PARAMETERS" value="aerial.jpg" />
+    <option name="PROGRAM_PARAMETERS" value="fingerprint.jpeg" />
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$" />
     <extension name="coverage">
       <pattern>

@@ -4,29 +4,37 @@ import es.unex.giiis.bss.jgarciapft.model.BaseImage;
 
 import java.awt.image.BufferedImage;
 
+import static es.unex.giiis.bss.jgarciapft.helpers.GrayscaleToRGB.Variant.*;
+
 public class GrayscaleToRGB {
 
-    public static BufferedImage grayscaleToRGB1GrayMode(BaseImage inputFingerprintImage) {
+    public static BufferedImage grayscaleToRGB1GrayMode(BaseImage inputImage, int mode) {
 
         BufferedImage outputImage =
-                new BufferedImage(inputFingerprintImage.getWidth(),
-                        inputFingerprintImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                new BufferedImage(inputImage.getWidth(), inputImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
-        for (int x = 0; x < inputFingerprintImage.getWidth(); x++) {
-            for (int y = 0; y < inputFingerprintImage.getHeight(); y++) {
-                int grayValue = inputFingerprintImage.getPixel(x, y);
+        for (int x = 0; x < inputImage.getWidth(); x++) {
+            for (int y = 0; y < inputImage.getHeight(); y++) {
+                int grayValue = inputImage.getPixel(x, y);
 
-                /*if (modo == 0) {
+                if (mode == BnW) {
                     grayValue *= 255;
-                }*/
+                }
 
-                int rgbPixel = (255 << 24 | grayValue << 16 | grayValue << 8 | grayValue);
+                int rgbPixel = (grayValue << 16 | grayValue << 8 | grayValue);
 
                 outputImage.setRGB(x, y, rgbPixel);
             }
         }
 
         return outputImage;
+    }
+
+    public static class Variant {
+
+        public static final int GRAYSCALE = 10;
+        public static final int BnW = 20;
+
     }
 
 }
