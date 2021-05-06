@@ -36,6 +36,32 @@ public class FingerprintImage implements BaseImage {
                 memoDependencies);
     }
 
+    public FingerprintImage(FingerprintImage original) {
+        width = original.getWidth();
+        height = original.getHeight();
+        pixels = new Character[height][width];
+
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                pixels[y][x] = original.getPixel(x, y);
+            }
+        }
+
+        Object[] memoDependencies = {pixels};
+
+        histogramMemoized = new MemoizedValue<>(() -> HistogramCalculator.histogramFrom(this),
+                memoDependencies);
+
+        minGrayMemoized = new MemoizedValue<>(() -> ImageStatistics.calculateMinGray(this),
+                memoDependencies);
+
+        maxGrayMemoized = new MemoizedValue<>(() -> ImageStatistics.calculateMaxGray(this),
+                memoDependencies);
+
+        meanGrayMemoized = new MemoizedValue<>(() -> ImageStatistics.calculateMeanGray(this),
+                memoDependencies);
+    }
+
     @Override
     public char getPixel(int x, int y) {
         if (validateXYCoord(x, y))

@@ -4,7 +4,8 @@ import es.unex.giiis.bss.jgarciapft.model.BaseImage;
 
 import java.awt.image.BufferedImage;
 
-import static es.unex.giiis.bss.jgarciapft.helpers.GrayscaleToRGB.Variant.*;
+import static es.unex.giiis.bss.jgarciapft.helpers.GrayscaleToRGB.Variant.BnW;
+import static es.unex.giiis.bss.jgarciapft.transformations.BinaryThreshold.ThresholdValues.ON;
 
 public class GrayscaleToRGB {
 
@@ -17,9 +18,8 @@ public class GrayscaleToRGB {
             for (int y = 0; y < inputImage.getHeight(); y++) {
                 int grayValue = inputImage.getPixel(x, y);
 
-                if (mode == BnW) {
-                    grayValue *= 255;
-                }
+                if (mode == BnW)
+                    grayValue = grayValue == ON ? 0 : 255;
 
                 int rgbPixel = (grayValue << 16 | grayValue << 8 | grayValue);
 

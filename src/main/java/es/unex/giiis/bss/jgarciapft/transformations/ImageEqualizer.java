@@ -26,8 +26,7 @@ public class ImageEqualizer {
         // Equalize the input image using LUT table
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                int inputPixelValue = inputImage.getPixel(x, y);
-                char eqdValue = (char) lut[inputPixelValue];
+                char eqdValue = (char) lut[inputImage.getPixel(x, y)];
                 eqdImage.setPixel(x, y, eqdValue);
             }
         }
