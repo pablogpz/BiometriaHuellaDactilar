@@ -3,6 +3,8 @@ package es.unex.giiis.bss.jgarciapft;
 import es.unex.giiis.bss.jgarciapft.helpers.GrayscaleToRGB;
 import es.unex.giiis.bss.jgarciapft.helpers.ImageExporter;
 import es.unex.giiis.bss.jgarciapft.model.FingerprintImage;
+import es.unex.giiis.bss.jgarciapft.processors.CrossingNumber;
+import es.unex.giiis.bss.jgarciapft.processors.MinutiaAngleCalculator;
 import es.unex.giiis.bss.jgarciapft.transformations.BinaryThreshold;
 import es.unex.giiis.bss.jgarciapft.transformations.Filter;
 import es.unex.giiis.bss.jgarciapft.transformations.GrayscaleTransformation;
@@ -36,7 +38,7 @@ public class Main {
                     GrayscaleToRGB.grayscaleToRGB1GrayMode(grayscaleImage, Variant.GRAYSCALE),
                     "fingerprint-grayscale");
 
-            // Práctica 2. Calculate the histogram and equalize the grayscale image
+            // Práctica 2. Calculate the histogram and equalize the grayscale image [DISABLED]
 //            FingerprintImage eqdGrayscaleImage = ImageEqualizer.equalizeGrayscaleImage(grayscaleImage);
 //            ImageExporter.exportImage(
 //                    GrayscaleToRGB.grayscaleToRGB1GrayMode(eqdGrayscaleImage, Variant.GRAYSCALE),
@@ -52,8 +54,13 @@ public class Main {
                     GrayscaleToRGB.grayscaleToRGB1GrayMode(filteredThresholdBinEqdImage, Variant.BnW),
                     "fingerprint-BW-filtered-threshold-equalized-grayscale");
 
-            // Práctica 4. ZhangSuen algorithm
+            // Práctica 4. Zhang-Suen algorithm
             FingerprintImage thinnedThresholdBinEqdImage = ZhangSuen.thinImage(thresholdBinEqdImage);
+
+            // Práctica 5. Minutiae extraction with Crossing number algorithm and gradient angle detection
+            CrossingNumber.crossingNumber(thinnedThresholdBinEqdImage);
+            MinutiaAngleCalculator.calculateAnglesOfMinutiae(thinnedThresholdBinEqdImage);
+            thinnedThresholdBinEqdImage.logMinutiae();
 
             // Export processed image
             ImageExporter.exportImage(
