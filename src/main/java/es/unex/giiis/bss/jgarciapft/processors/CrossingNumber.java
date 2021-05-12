@@ -3,6 +3,7 @@ package es.unex.giiis.bss.jgarciapft.processors;
 import es.unex.giiis.bss.jgarciapft.model.FingerprintImage;
 import es.unex.giiis.bss.jgarciapft.model.Minutia;
 import es.unex.giiis.bss.jgarciapft.model.MinutiaTypes;
+import es.unex.giiis.bss.jgarciapft.model.Tuple;
 
 import static es.unex.giiis.bss.jgarciapft.model.MinutiaTypes.BIFURCATION;
 import static es.unex.giiis.bss.jgarciapft.model.MinutiaTypes.CUT;
@@ -12,9 +13,13 @@ public class CrossingNumber {
 
     final static int[][] neighborsSequence = {{1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}};
 
-    public static void crossingNumber(FingerprintImage inputImage) {
-        for (int x = 1; x < inputImage.getWidth() - 1; x++) {
-            for (int y = 1; y < inputImage.getHeight() - 1; y++) {
+    public static void crossingNumber(
+            FingerprintImage inputImage,
+            Tuple<Integer, Integer> upperBoundCorner,
+            Tuple<Integer, Integer> lowerBoundCorner) {
+
+        for (int x = upperBoundCorner.first(); x < lowerBoundCorner.first(); x++) {
+            for (int y = upperBoundCorner.second(); y < lowerBoundCorner.second(); y++) {
 
                 if (inputImage.getPixel(x, y) == OFF) continue;
 

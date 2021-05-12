@@ -2,7 +2,9 @@ package es.unex.giiis.bss.jgarciapft;
 
 import es.unex.giiis.bss.jgarciapft.helpers.GrayscaleToRGB;
 import es.unex.giiis.bss.jgarciapft.helpers.ImageExporter;
+import es.unex.giiis.bss.jgarciapft.helpers.MinutiaOutliner;
 import es.unex.giiis.bss.jgarciapft.model.FingerprintImage;
+import es.unex.giiis.bss.jgarciapft.model.Tuple;
 import es.unex.giiis.bss.jgarciapft.processors.CrossingNumber;
 import es.unex.giiis.bss.jgarciapft.processors.MinutiaAngleCalculator;
 import es.unex.giiis.bss.jgarciapft.transformations.BinaryThreshold;
@@ -15,6 +17,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import static es.unex.giiis.bss.jgarciapft.Constants.FINGERPRINT_LOCATION_PERCENTAGE_X;
+import static es.unex.giiis.bss.jgarciapft.Constants.FINGERPRINT_LOCATION_PERCENTAGE_Y;
 import static es.unex.giiis.bss.jgarciapft.helpers.GrayscaleToRGB.Variant;
 import static es.unex.giiis.bss.jgarciapft.transformations.GrayscaleTransformation.DerivationMethod;
 
@@ -58,14 +62,25 @@ public class Main {
             FingerprintImage thinnedThresholdBinEqdImage = ZhangSuen.thinImage(thresholdBinEqdImage);
 
             // Práctica 5. Minutiae extraction with Crossing number algorithm and gradient angle detection
-            CrossingNumber.crossingNumber(thinnedThresholdBinEqdImage);
-            MinutiaAngleCalculator.calculateAnglesOfMinutiae(thinnedThresholdBinEqdImage);
-            thinnedThresholdBinEqdImage.logMinutiae();
+            Tuple<Integer, Integer> upperMargin = new Tuple<>(
+                    (int) (grayscaleImage.getWidth() * FINGERPRINT_LOCATION_PERCENTAGE_X),
+                    (int) (grayscaleImage.getHeight() * FINGERPRINT_LOCATION_PERCENTAGE_Y));
+            Tuple<Integer, Integer> lowerMargin = new Tuple<>(
+                    (int) (grayscaleImage.getWidth() * (1 - FINGERPRINT_LOCATION_PERCENTAGE_X)),
+                    (int) (grayscaleImage.getHeight() * (1 - FINGERPRINT_LOCATION_PERCENTAGE_Y)));
 
-            // Export processed image
+            CrossingNumber.crossingNumber(thinnedThresholdBinEqdImage, upperMargin, lowerMargin);
+            MinutiaAngleCalculator.calculateAnglesOfMinutiae(thinnedThresholdBinEqdImage);
+
             ImageExporter.exportImage(
                     GrayscaleToRGB.grayscaleToRGB1GrayMode(thinnedThresholdBinEqdImage, Variant.BnW),
                     "fingerprint-BW-thinned-filtered-threshold-equalized-grayscale");
+
+            // Export and log to console processed image with minutiae
+            thinnedThresholdBinEqdImage.logMinutiae();
+            ImageExporter.exportImage(
+                    MinutiaOutliner.outlineMinutiae(thinnedThresholdBinEqdImage),
+                    "fingerprint-BW-analyzed-thinned-filtered-threshold-equalized-grayscale");
         } catch (IOException e) {
             e.printStackTrace();
         }

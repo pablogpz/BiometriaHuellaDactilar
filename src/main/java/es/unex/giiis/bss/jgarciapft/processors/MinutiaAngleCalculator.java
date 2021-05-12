@@ -14,7 +14,7 @@ import static es.unex.giiis.bss.jgarciapft.transformations.BinaryThreshold.Thres
 public class MinutiaAngleCalculator {
 
     final static int[][] neighborsSequence = {{1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}};
-    public static final int GRADIENT_NEIGHBORHOUD_WINDOW = 6;
+    public static final int GRADIENT_NEIGHBORHOOD_WINDOW_LENGTH = 6;
 
     public static void calculateAnglesOfMinutiae(FingerprintImage inputImage) {
 
@@ -52,7 +52,7 @@ public class MinutiaAngleCalculator {
         int finalY = startY;
         int nextNeighborIdx = -1;
 
-        for (int i = 1; i <= GRADIENT_NEIGHBORHOUD_WINDOW; i++) {
+        for (int i = 1; i <= GRADIENT_NEIGHBORHOOD_WINDOW_LENGTH; i++) {
             nextNeighborIdx = firstNeighbor(inputImage, new Tuple<>(finalX, finalY), nextNeighborIdx, i == 1 ? branchingIndex : 1);
 
             if (nextNeighborIdx == neighborsSequence.length) break;
@@ -63,12 +63,20 @@ public class MinutiaAngleCalculator {
         }
 
         float gradientX = finalX - startX;
-        float gradientY = finalY - startY;
+        float gradientY = -(finalY - startY);
 
-        return gradientX != 0 ? Math.toDegrees(Math.atan(gradientY / gradientX)) : 90d;
+        if (gradientX == 0) return gradientY < 0 ? 90d : -90d;
+        if (gradientY == 0) return gradientX < 0 ? 180 : -180d;
+
+        return Math.toDegrees(Math.atan(gradientY / gradientX));
     }
 
-    private static int firstNeighbor(FingerprintImage image, Tuple<Integer, Integer> centralPoint, int ignore, int branchingIndex) {
+    private static int firstNeighbor(
+            FingerprintImage image,
+            Tuple<Integer, Integer> centralPoint,
+            int ignore,
+            int branchingIndex) {
+
         int neighborIdx = 0;
 
         for (; neighborIdx < neighborsSequence.length && branchingIndex > 0; neighborIdx++) {
